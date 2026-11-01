@@ -36,8 +36,9 @@ const NewArrivals = () => {
             <h3 className="mt-4 font-semibold">{book.title}</h3>
             <p className="text-sm">by {book.author}</p>
             <p className="mt-2 text-sm">Category: {book.category}</p>
-            <p className="text-sm">Copies: {book.copies}</p>
-            <p className="mt-2 text-sm">{book.description}</p>
+            <button className="mt-4 w-full rounded-md border px-4 py-2 text-sm font-medium">
+              View Details
+            </button>
           </div>
         ))}
       </div>
