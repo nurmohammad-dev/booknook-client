@@ -39,7 +39,7 @@ export default function HowBorrowingWorks() {
           </h2>
 
           <p className="mt-5 max-w-md text-sm leading-7 text-white/45">
-            From discovering a new story to returning it after you've finished,
+            From discovering a new story to returning it after you&apos;ve finished,
             BookNook keeps the entire borrowing experience simple.
           </p>
         </div>
