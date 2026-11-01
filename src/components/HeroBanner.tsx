@@ -27,7 +27,7 @@ export default function HeroBanner() {
       <div className="absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald-400/10 blur-[100px]" />
 
       {/* Content */}
-      <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-4 pb-16 pt-32 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
 
         <div className="max-w-3xl">
 

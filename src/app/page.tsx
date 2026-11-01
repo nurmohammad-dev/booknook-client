@@ -1,16 +1,15 @@
-import Navbar from "@/components/Navbar";
 import HeroBanner from "@/components/HeroBanner";
+import HowBorrowingWorks from "@/components/home/HowBorrowingWorks";
+import TopCategories from "@/components/home/TopCategories";
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="bg-slate-950">
-      <div className="relative">
-        <Navbar />
+    <>
+      <main className="min-h-screen">
         <HeroBanner />
-      </div>
-
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-      </section>
-    </main>
-  );
+        <HowBorrowingWorks />
+        <TopCategories />
+      </main>
+    </>
+  )
 }

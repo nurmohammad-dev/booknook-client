@@ -50,7 +50,7 @@ export default function TopCategories() {
               <a
                 key={category.name}
                 href={`/books?category=${category.name.toLowerCase()}`}
-                className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0a1012] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-[#0d1417]"
+                className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-white/[0.06]"
               >
                 <div className="absolute top-0 right-0 h-24 w-24 -translate-y-1/2 translate-x-1/3 rounded-full bg-emerald-400/[0.06] blur-[40px]" aria-hidden="true" />
 

@@ -1,70 +1,73 @@
-"use client"
-
+import Link from "next/link";
 import { BookOpen, Mail, Phone, MapPin } from "lucide-react";
+import { X, Facebook, Instagram } from "./SocialIcons";
 
 export default function Footer() {
   return (
-    <footer className="relative border-t border-white/10 bg-slate-950">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 items-start">
+    <footer className="w-full border-t border-white/5 bg-slate-950 text-slate-300">
+      <div className="mx-auto max-w-7xl px-4 pt-12 pb-6 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
           {/* Brand */}
           <div>
-            <a href="/" className="inline-flex items-center gap-2.5 mb-4" aria-label="BookNook Home">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400 text-slate-950">
-                <BookOpen size={18} strokeWidth={2.5} />
+            <Link href="/" className="inline-flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 ring-1 ring-emerald-500/30">
+                <BookOpen size={17} className="text-emerald-400" />
               </div>
-              <span className="font-heading text-lg font-bold text-white tracking-tight">BookNook</span>
-            </a>
-            <p className="text-xs leading-relaxed text-white/45 max-w-xs">
-              A small neighbourhood library on the web. Share the books on your shelf and borrow the ones you have been meaning to read.
+              <span className="text-base font-bold tracking-tight text-white">
+                BookNook
+              </span>
+            </Link>
+            <p className="mt-3 max-w-xs text-xs leading-relaxed text-slate-400">
+              A small neighbourhood library on the web. Share the books on your
+              shelf and borrow the ones you have been meaning to read.
             </p>
           </div>
 
           {/* Contact */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-white/70 mb-4">Contact</h3>
-            <ul className="space-y-3 text-sm text-white/60">
+            <h3 className="text-sm font-semibold text-white">Contact</h3>
+            <ul className="mt-4 space-y-2.5 text-xs text-slate-400">
               <li>
-                <a href="mailto:hello@booknook.app" className="inline-flex items-center gap-2.5 hover:text-emerald-300 transition-colors">
-                  <Mail size={14} className="text-emerald-400 shrink-0" />
+                <a
+                  href="mailto:hello@booknook.app"
+                  className="inline-flex items-center gap-2.5 transition-colors hover:text-emerald-400"
+                >
+                  <Mail size={13} className="shrink-0" />
                   hello@booknook.app
                 </a>
               </li>
               <li>
-                <a href="tel:+8801700000000" className="inline-flex items-center gap-2.5 hover:text-emerald-300 transition-colors">
-                  <Phone size={14} className="text-emerald-400 shrink-0" />
+                <a
+                  href="tel:+8801700000000"
+                  className="inline-flex items-center gap-2.5 transition-colors hover:text-emerald-400"
+                >
+                  <Phone size={13} className="shrink-0" />
                   +880 1700 000 000
                 </a>
               </li>
-              <li>
-                <span className="inline-flex items-center gap-2.5">
-                  <MapPin size={14} className="text-emerald-400 shrink-0" />
-                  12 Reading Lane, Dhaka
-                </span>
+              <li className="inline-flex items-center gap-2.5">
+                <MapPin size={13} className="shrink-0" />
+                12 Reading Lane, Dhaka
               </li>
             </ul>
           </div>
 
-          {/* Follow Us */}
+          {/* Follow us */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.15em] text-white/70 mb-4">Follow us</h3>
-            <div className="flex gap-3">
-              {["X", "Facebook", "Instagram"].map((label) => (
+            <h3 className="text-sm font-semibold text-white">Follow us</h3>
+            <div className="mt-4 flex gap-3">
+              {[
+                { label: "X (Twitter)", icon: X },
+                { label: "Facebook", icon: Facebook },
+                { label: "Instagram", icon: Instagram },
+              ].map(({ label, icon: Icon }) => (
                 <a
                   key={label}
                   href="#"
                   aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/60 transition hover:border-emerald-400/50 hover:text-emerald-300 hover:bg-emerald-400/10"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-slate-400 transition hover:bg-white/10 hover:text-emerald-400"
                 >
-                  {label === "X" && (
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="size-4"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                  )}
-                  {label === "Facebook" && (
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="size-4"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
-                  )}
-                  {label === "Instagram" && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><circle cx="12" cy="12" r="5" /><circle cx="17.5" cy="6.5" r="1.5" /></svg>
-                  )}
+                  <Icon className="size-3.5" />
                 </a>
               ))}
             </div>
@@ -72,7 +75,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-10 pt-6 border-t border-white/10 text-center text-[11px] text-white/30 tracking-wide">
+        <div className="mt-10 border-t border-white/5 pt-5 text-center text-[11px] text-slate-500">
           © 2026 BookNook. All rights reserved.
         </div>
       </div>
