@@ -6,4 +6,5 @@ export interface IBook {
   copies: number;
   description: string;
   dateAdded: string;
+  image: string;
 }

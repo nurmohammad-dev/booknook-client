@@ -1,6 +1,7 @@
 "use client";
 
 import { IBook } from "@/lib/type/Book";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const NewArrivals = () => {
@@ -46,6 +47,11 @@ return (
           <p className="mt-2 text-sm">
             {book.description}
           </p>
+          <Image
+          src={book.image}
+          alt={book.title}
+         className="h-64 w-full object-cover"
+            />
         </div>
       ))}
     </div>

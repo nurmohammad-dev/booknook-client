@@ -50,52 +50,77 @@ export default function AddBookPage() {
     }));
   };
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+ async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault();
 
-    try {
-      const res = await fetch("http://localhost:8000/add-book", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: form.title,
-          author: form.author,
-          category: form.category,
-          copies: form.copies,
-          description: form.description,
-          addedBy: form.addedBy,
-          addedByEmail: form.addedByEmail,
+  try {
+    let imageUrl = "";
 
-         
-        }),
-      });
+    if (form.image) {
+      const imageFormData = new FormData();
 
-    const result = await res.json();
-    console.log(result);
+      imageFormData.append("image", form.image);
 
-      if (!res.ok) {
-        throw new Error("Failed to add book");
+      const imageResponse = await fetch(
+        "http://localhost:8000/upload-image",
+        {
+          method: "POST",
+          body: imageFormData,
+        }
+      );
+
+      const imageData = await imageResponse.json();
+
+      if (!imageResponse.ok) {
+        throw new Error("Failed to upload image");
       }
 
-      setAddedTitle(form.title);
+      imageUrl = imageData.imageUrl;
 
-      // Clear form after successful submit
-      setForm({
-        title: "",
-        author: "",
-        category: "",
-        copies: 1,
-        description: "",
-        addedBy: "",
-        addedByEmail: "",
-        image: null,
-      });
-    } catch (error) {
-      console.error("Error adding book:", error);
+      console.log("Uploaded image URL:", imageUrl);
     }
+
+    const res = await fetch("http://localhost:8000/add-book", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: form.title,
+        author: form.author,
+        category: form.category,
+        copies: form.copies,
+        description: form.description,
+        addedBy: form.addedBy,
+        addedByEmail: form.addedByEmail,
+        image: imageUrl,
+      }),
+    });
+
+    const result = await res.json();
+
+    console.log(result);
+
+    if (!res.ok) {
+      throw new Error("Failed to add book");
+    }
+
+    setAddedTitle(form.title);
+
+    setForm({
+      title: "",
+      author: "",
+      category: "",
+      copies: 1,
+      description: "",
+      addedBy: "",
+      addedByEmail: "",
+      image: null,
+    });
+  } catch (error) {
+    console.error("Error adding book:", error);
   }
+}
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-[#060e0c] px-4 py-20 sm:px-6 lg:px-8">
