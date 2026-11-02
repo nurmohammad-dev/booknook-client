@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const links = [
   { href: "/", label: "Home" },
@@ -13,6 +15,10 @@ const links = [
 ];
 
 export default function Navbar() {
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+  console.log("User in Navbar:", user);
+
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -52,20 +58,32 @@ export default function Navbar() {
 
         {/* Right — Auth */}
         <div className="ml-auto hidden items-center gap-6 md:flex">
-          <Link
-            href="/login"
-            className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
-          >
-            Login
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-full bg-emerald-500 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
-          >
-            Register
-          </Link>
-        </div>
+          {user ? (
+            <Avatar>
+              <AvatarImage
+                referrerPolicy="no-referrer"
+                src={user.image as string}
+              />
+              <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+            </Avatar>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
+              >
+                Login
+              </Link>
 
+              <Link
+                href="/register"
+                className="rounded-full bg-emerald-500 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400"
+              >
+                Register
+              </Link>
+            </>
+          )}
+        </div>
         {/* Mobile toggle */}
         <button
           type="button"
@@ -93,6 +111,7 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
             <Link
               href="/login"
               onClick={() => setMenuOpen(false)}

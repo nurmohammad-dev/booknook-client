@@ -58,9 +58,7 @@ export default function RegisterPage() {
       password: string;
       image: string;
     };
-
-    console.log(user);
-
+    
     const { data, error } = await authClient.signUp.email({
       ...user,
     });
