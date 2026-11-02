@@ -1,3 +1,4 @@
+import BorrowButton from "@/components/books/BorrowButton";
 import Image from "next/image";
 
 export default async function BookDetailsPage({
@@ -34,6 +35,7 @@ export default async function BookDetailsPage({
           <p className="mt-4 text-sm text-gray-500">
             Added: {new Date(book.dateAdded).toLocaleDateString()}
           </p>
+          <BorrowButton bookId={id} />
         </div>
       </div>
     </main>
