@@ -7,6 +7,16 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "./ui/button";
+
 const links = [
   { href: "/", label: "Home" },
   { href: "/books", label: "All Books" },
@@ -17,7 +27,10 @@ const links = [
 export default function Navbar() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
-  console.log("User in Navbar:", user);
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+  };
 
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -57,15 +70,53 @@ export default function Navbar() {
         </div>
 
         {/* Right — Auth */}
-        <div className="ml-auto hidden items-center gap-6 md:flex">
+        <div className="ml-auto hidden items-center gap-6 md:flex cursor-pointer">
           {user ? (
-            <Avatar>
-              <AvatarImage
-                referrerPolicy="no-referrer"
-                src={user.image as string}
-              />
-              <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
-            </Avatar>
+            <Popover>
+              <PopoverTrigger
+                render={
+                  <Avatar>
+                    <AvatarImage
+                      referrerPolicy="no-referrer"
+                      src={user?.image as string}
+                    />
+                    <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                }
+              ></PopoverTrigger>
+              <PopoverContent className="w-52 border border-slate-700 bg-slate-950 p-0 text-white">
+                <PopoverHeader className="border-b border-slate-800 p-3">
+                  <PopoverTitle className="text-sm font-medium text-white">
+                    {user?.name}
+                  </PopoverTitle>
+
+                  <PopoverDescription className="mt-1 text-xs text-slate-400">
+                    {user?.email}
+                  </PopoverDescription>
+                </PopoverHeader>
+
+                <div>
+                  <Link
+                    href="/my-profile"
+                    className="block rounded-md px-2 py-2 text-sm text-slate-300 transition-colors hover:bg-orange-400 hover:text-slate-950"
+                  >
+                    My Profile
+                  </Link>
+                </div>
+
+                <div className="border-t border-slate-800" />
+
+                <div>
+                  <Button
+                    onClick={handleLogout}
+                    variant="ghost"
+                    className="w-full justify-start rounded-md px-2 py-2 text-sm font-normal text-slate-300 hover:bg-orange-400 hover:text-slate-950 cursor-pointer"
+                  >
+                    Log Out
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
           ) : (
             <>
               <Link
