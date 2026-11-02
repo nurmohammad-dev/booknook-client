@@ -13,10 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { redirect, useRouter } from "next/navigation";
+import { redirect} from "next/navigation";
 
 export default function RegisterPage() {
-  const router = useRouter();
 
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
