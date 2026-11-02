@@ -2,6 +2,7 @@
 
 import { IBook } from "@/lib/type/Book";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const NewArrivals = () => {
@@ -36,11 +37,22 @@ const NewArrivals = () => {
             <h3 className="mt-4 font-semibold">{book.title}</h3>
             <p className="text-sm">by {book.author}</p>
             <p className="mt-2 text-sm">Category: {book.category}</p>
-            <button className="mt-4 w-full rounded-md border px-4 py-2 text-sm font-medium">
+            <Link
+              href={`/books/${book._id}`}
+              className="mt-4 block w-full rounded-md border px-4 py-2 text-center text-sm font-medium"
+            >
               View Details
-            </button>
+            </Link>
           </div>
         ))}
+      </div>
+      <div className="mt-8 text-center">
+        <Link
+          href="/books"
+          className="inline-block rounded-md border px-6 py-2 text-sm font-medium"
+        >
+          See All Books
+        </Link>
       </div>
     </section>
   );
