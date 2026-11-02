@@ -68,13 +68,6 @@ export default function HeroBanner() {
               />
             </Link>
 
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-medium text-white backdrop-blur-md transition hover:bg-white/10"
-            >
-              Join the Library
-            </Link>
-
           </div>
 
           {/* Stats */}
