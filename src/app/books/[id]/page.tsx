@@ -35,7 +35,7 @@ export default async function BookDetailsPage({
           <p className="mt-4 text-sm text-gray-500">
             Added: {new Date(book.dateAdded).toLocaleDateString()}
           </p>
-          <BorrowButton bookId={id} />
+          <BorrowButton bookId={id} copies={book.copies} />
         </div>
       </div>
     </main>

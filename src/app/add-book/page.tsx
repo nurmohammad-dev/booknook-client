@@ -23,17 +23,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { authClient } from "@/lib/auth-client";
+
 const categories = ["Fiction", "Science", "History", "Kids", "Others"];
 
 export default function AddBookPage() {
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
   const [form, setForm] = useState({
     title: "",
     author: "",
     category: "",
     copies: 1,
     description: "",
-    addedBy: "",
-    addedByEmail: "",
     image: null as File | null,
   });
 
@@ -42,7 +45,7 @@ export default function AddBookPage() {
   // Update form data
   const update = (
     field: keyof typeof form,
-    value: string | number | File | null,
+    value: string | number | File | null
   ) => {
     setForm((current) => ({
       ...current,
@@ -50,77 +53,86 @@ export default function AddBookPage() {
     }));
   };
 
- async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault();
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
 
-  try {
-    let imageUrl = "";
+    try {
+      let imageUrl = "";
 
-    if (form.image) {
-      const imageFormData = new FormData();
+      // Upload image
+      if (form.image) {
+        const imageFormData = new FormData();
 
-      imageFormData.append("image", form.image);
+        imageFormData.append("image", form.image);
 
-      const imageResponse = await fetch(
-        "http://localhost:8000/upload-image",
-        {
-          method: "POST",
-          body: imageFormData,
+        const imageResponse = await fetch(
+          "http://localhost:8000/upload-image",
+          {
+            method: "POST",
+            body: imageFormData,
+          }
+        );
+
+        const imageData = await imageResponse.json();
+
+        if (!imageResponse.ok) {
+          throw new Error("Failed to upload image");
         }
-      );
 
-      const imageData = await imageResponse.json();
+        imageUrl = imageData.imageUrl;
 
-      if (!imageResponse.ok) {
-        throw new Error("Failed to upload image");
+        console.log("Uploaded image URL:", imageUrl);
       }
 
-      imageUrl = imageData.imageUrl;
-
-      console.log("Uploaded image URL:", imageUrl);
-    }
-
-    const res = await fetch("http://localhost:8000/add-book", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+      // Book data
+      const bookData = {
         title: form.title,
         author: form.author,
         category: form.category,
         copies: form.copies,
         description: form.description,
-        addedBy: form.addedBy,
-        addedByEmail: form.addedByEmail,
+        addedBy: user?.name || "",
+        addedByEmail: user?.email || "",
         image: imageUrl,
-      }),
-    });
+      };
 
-    const result = await res.json();
+      // Add book
+      const res = await fetch(
+        "http://localhost:8000/add-book",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bookData),
+        }
+      );
 
-    console.log(result);
+      const result = await res.json();
 
-    if (!res.ok) {
-      throw new Error("Failed to add book");
+      console.log(result);
+
+      if (!res.ok) {
+        throw new Error("Failed to add book");
+      }
+
+      setAddedTitle(form.title);
+
+      // Reset form
+      setForm({
+        title: "",
+        author: "",
+        category: "",
+        copies: 1,
+        description: "",
+        image: null,
+      });
+    } catch (error) {
+      console.error("Error adding book:", error);
     }
-
-    setAddedTitle(form.title);
-
-    setForm({
-      title: "",
-      author: "",
-      category: "",
-      copies: 1,
-      description: "",
-      addedBy: "",
-      addedByEmail: "",
-      image: null,
-    });
-  } catch (error) {
-    console.error("Error adding book:", error);
   }
-}
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-[#060e0c] px-4 py-20 sm:px-6 lg:px-8">
@@ -183,7 +195,9 @@ export default function AddBookPage() {
                     id="title"
                     name="title"
                     value={form.title}
-                    onChange={(event) => update("title", event.target.value)}
+                    onChange={(event) =>
+                      update("title", event.target.value)
+                    }
                     required
                     placeholder="The Hobbit"
                     className="h-11 rounded-xl border-white/[0.1] bg-white/[0.03] text-white placeholder:text-white/25"
@@ -202,7 +216,9 @@ export default function AddBookPage() {
                     id="author"
                     name="author"
                     value={form.author}
-                    onChange={(event) => update("author", event.target.value)}
+                    onChange={(event) =>
+                      update("author", event.target.value)
+                    }
                     required
                     placeholder="J.R.R. Tolkien"
                     className="h-11 rounded-xl border-white/[0.1] bg-white/[0.03] text-white placeholder:text-white/25"
@@ -222,7 +238,9 @@ export default function AddBookPage() {
 
                   <Select
                     value={form.category}
-                    onValueChange={(value) => update("category", value)}
+                    onValueChange={(value) =>
+                      update("category", value)
+                    }
                     required
                   >
                     <SelectTrigger
@@ -296,7 +314,10 @@ export default function AddBookPage() {
                     accept="image/*"
                     className="hidden"
                     onChange={(event) =>
-                      update("image", event.target.files?.[0] ?? null)
+                      update(
+                        "image",
+                        event.target.files?.[0] ?? null
+                      )
                     }
                   />
                 </label>
@@ -329,7 +350,7 @@ export default function AddBookPage() {
                 />
               </div>
 
-              {/* Added By - User Name */}
+              {/* User Name */}
               <div className="flex flex-col gap-2.5">
                 <Label
                   htmlFor="addedBy"
@@ -347,7 +368,7 @@ export default function AddBookPage() {
                   <Input
                     id="addedBy"
                     name="addedBy"
-                    value={form.addedBy}
+                    value={user?.name || ""}
                     readOnly
                     placeholder="User's name"
                     className="h-11 rounded-xl border-white/[0.1] bg-white/[0.03] pl-10 text-white placeholder:text-white/25"
@@ -355,7 +376,7 @@ export default function AddBookPage() {
                 </div>
               </div>
 
-              {/* Added By - User Email */}
+              {/* User Email */}
               <div className="flex flex-col gap-2.5">
                 <Label
                   htmlFor="addedByEmail"
@@ -374,7 +395,7 @@ export default function AddBookPage() {
                     id="addedByEmail"
                     name="addedByEmail"
                     type="email"
-                    value={form.addedByEmail}
+                    value={user?.email || ""}
                     readOnly
                     placeholder="User's email"
                     className="h-11 rounded-xl border-white/[0.1] bg-white/[0.03] pl-10 text-white placeholder:text-white/25"
@@ -385,7 +406,8 @@ export default function AddBookPage() {
               {/* Submit */}
               <button
                 type="submit"
-                className="mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 text-sm font-semibold text-[#04100c] transition-all hover:bg-emerald-400"
+                disabled={!user}
+                className="mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-6 text-sm font-semibold text-[#04100c] transition-all hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <BookPlus size={17} />
                 Add Book
