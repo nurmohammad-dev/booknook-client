@@ -45,7 +45,7 @@ export default function AddBookPage() {
   // Update form data
   const update = (
     field: keyof typeof form,
-    value: string | number | File | null
+    value: string | number | File | null,
   ) => {
     setForm((current) => ({
       ...current,
@@ -53,10 +53,15 @@ export default function AddBookPage() {
     }));
   };
 
-  async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const { data, error } = await authClient.token();
+    const token = data?.token;
+
+    if (error || !token) {
+      throw new Error("Failed to get authentication token");
+    }
 
     try {
       let imageUrl = "";
@@ -71,8 +76,11 @@ export default function AddBookPage() {
           "http://localhost:8000/upload-image",
           {
             method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
             body: imageFormData,
-          }
+          },
         );
 
         const imageData = await imageResponse.json();
@@ -99,16 +107,14 @@ export default function AddBookPage() {
       };
 
       // Add book
-      const res = await fetch(
-        "http://localhost:8000/books",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bookData),
-        }
-      );
+      const res = await fetch("http://localhost:8000/books", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bookData),
+      });
 
       const result = await res.json();
 
@@ -195,9 +201,7 @@ export default function AddBookPage() {
                     id="title"
                     name="title"
                     value={form.title}
-                    onChange={(event) =>
-                      update("title", event.target.value)
-                    }
+                    onChange={(event) => update("title", event.target.value)}
                     required
                     placeholder="The Hobbit"
                     className="h-11 rounded-xl border-white/[0.1] bg-white/[0.03] text-white placeholder:text-white/25"
@@ -216,9 +220,7 @@ export default function AddBookPage() {
                     id="author"
                     name="author"
                     value={form.author}
-                    onChange={(event) =>
-                      update("author", event.target.value)
-                    }
+                    onChange={(event) => update("author", event.target.value)}
                     required
                     placeholder="J.R.R. Tolkien"
                     className="h-11 rounded-xl border-white/[0.1] bg-white/[0.03] text-white placeholder:text-white/25"
@@ -238,9 +240,7 @@ export default function AddBookPage() {
 
                   <Select
                     value={form.category}
-                    onValueChange={(value) =>
-                      update("category", value)
-                    }
+                    onValueChange={(value) => update("category", value)}
                     required
                   >
                     <SelectTrigger
@@ -314,10 +314,7 @@ export default function AddBookPage() {
                     accept="image/*"
                     className="hidden"
                     onChange={(event) =>
-                      update(
-                        "image",
-                        event.target.files?.[0] ?? null
-                      )
+                      update("image", event.target.files?.[0] ?? null)
                     }
                   />
                 </label>
