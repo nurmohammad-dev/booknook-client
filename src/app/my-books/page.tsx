@@ -480,7 +480,6 @@ export default function MyBooksPage() {
         </Card>
       </div>
 
-      {/* ================= EDIT DIALOG ================= */}
 
       {/* ================= EDIT DIALOG ================= */}
 

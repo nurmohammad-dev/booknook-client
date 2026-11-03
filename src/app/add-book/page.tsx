@@ -100,7 +100,7 @@ export default function AddBookPage() {
 
       // Add book
       const res = await fetch(
-        "http://localhost:8000/add-book",
+        "http://localhost:8000/books",
         {
           method: "POST",
           headers: {
