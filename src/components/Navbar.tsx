@@ -18,16 +18,20 @@ import {
 import { Button } from "./ui/button";
 
 const links = [
-  { href: "/", label: "Home" },
-  { href: "/books", label: "All Books" },
-  { href: "/add-book", label: "Add Book" },
-  { href: "/my-books", label: "My Books" },
-  { href: "/my-borrows", label: "My Borrows" },
+  { href: "/", label: "Home", private: false },
+  { href: "/books", label: "All Books", private: false },
+  { href: "/add-book", label: "Add Book", private: true },
+  { href: "/my-books", label: "My Books", private: true },
+  { href: "/my-borrows", label: "My Borrows", private: true },
 ];
 
 export default function Navbar() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
+
+  // Assignment: private routes (Add Book, My Books, My Borrows) are only
+  // shown when the user is logged in
+  const visibleLinks = links.filter((link) => !link.private || user);
 
   const handleLogout = async () => {
     await authClient.signOut();
@@ -54,7 +58,7 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden items-center gap-7 md:flex">
-            {links.map((link) => (
+            {visibleLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -151,7 +155,7 @@ export default function Navbar() {
       {menuOpen && (
         <div className="border-t border-white/5 bg-slate-950 md:hidden">
           <div className="mx-auto flex max-w-7xl flex-col px-4 sm:px-6">
-            {links.map((link) => (
+            {visibleLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
