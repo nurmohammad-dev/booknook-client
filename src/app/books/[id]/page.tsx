@@ -2,6 +2,7 @@ import BorrowButton from "@/components/books/BorrowButton";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import Image from "next/image";
+import { redirect, notFound } from "next/navigation";
 import { API_BASE } from "@/lib/api";
 
 export default async function BookDetailsPage({
@@ -11,7 +12,16 @@ export default async function BookDetailsPage({
 }) {
   const { id } = await params;
 
-  //server componet theke token access
+  // Private route: send unauthenticated visitors to login (they come back here after login)
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    redirect(`/login?redirect=/books/${id}`);
+  }
+
+  //server component: attach the session's JWT to the protected API call
   const jwtToken = await auth.api.getToken({
     headers: await headers(),
   })
@@ -21,7 +31,16 @@ export default async function BookDetailsPage({
       Authorization: `Bearer ${token}`,
     },
   });
+
+  if (!res.ok) {
+    notFound();
+  }
+
   const book = await res.json();
+
+  if (!book || !book._id) {
+    notFound();
+  }
 
   return (
     <main className="mx-auto min-h-screen max-w-4xl px-4 py-12">
@@ -45,7 +64,8 @@ export default async function BookDetailsPage({
 
           <p className="mt-6 text-gray-600">{book.description}</p>
           <p className="mt-4 text-sm text-gray-500">
-            Added: {new Date(book.dateAdded).toLocaleDateString()}
+            Added by {book.addedBy || "Unknown"} ({book.addedByEmail})
+            on {new Date(book.dateAdded).toLocaleDateString()}
           </p>
           <BorrowButton bookId={id} copies={book.copies} />
         </div>

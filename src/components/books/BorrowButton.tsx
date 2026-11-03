@@ -19,12 +19,18 @@ export default function BorrowButton({
   const { data: session } = authClient.useSession();
 
   const user = session?.user;
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBorrowing, setIsBorrowing] = useState(false);
   const [error, setError] = useState("");
 
   const openModal = () => {
+    // Assignment: a logged-out user clicking "Borrow" must be sent to Login
+    // and come back to this page after logging in
+    if (!user?.email) {
+      router.push(`/login?redirect=/books/${bookId}`);
+      return;
+    }
+
     setError("");
     setIsModalOpen(true);
   };
