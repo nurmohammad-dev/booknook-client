@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { Edit, Trash2, Upload } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
-import { API_BASE, getAuthToken, authHeaders } from "@/lib/api";
 
 import {
   Card,
@@ -131,7 +130,9 @@ export default function MyBooksPage() {
         setLoading(true);
         setError("");
 
-        const res = await fetch(`${API_BASE}/books`);
+        const res = await fetch(
+          "http://localhost:8000/books"
+        );
 
         const data = await res.json();
 
@@ -205,11 +206,16 @@ export default function MyBooksPage() {
 
         imageFormData.append("image", editImage);
 
+        const { data: tokenData } = await authClient.token();
+        const token = tokenData?.token;
+
         const imageResponse = await fetch(
-          `${API_BASE}/upload-image`,
+          "http://localhost:8000/upload-image",
           {
             method: "POST",
-            headers: authHeaders(await getAuthToken()),
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
             body: imageFormData,
           }
         );
@@ -234,13 +240,16 @@ export default function MyBooksPage() {
         image: imageUrl,
       };
 
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+
       const res = await fetch(
-        `${API_BASE}/books/${editingBook._id}`,
+        `http://localhost:8000/books/${editingBook._id}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            ...(authHeaders(await getAuthToken()) as Record<string, string>),
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(bookData),
         }
@@ -294,11 +303,16 @@ export default function MyBooksPage() {
       setError("");
       setSuccess("");
 
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+
       const res = await fetch(
-        `${API_BASE}/books/${deletingBook._id}`,
+        `http://localhost:8000/books/${deletingBook._id}`,
         {
           method: "DELETE",
-          headers: authHeaders(await getAuthToken()),
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -336,7 +350,7 @@ export default function MyBooksPage() {
   // Loading
   if (loading) {
     return (
-      <main className="min-h-screen px-4 py-12">
+      <main className="min-h-screen bg-[#060e0c] px-4 py-12">
         <div className="mx-auto max-w-7xl">
           <Card>
             <CardContent className="flex min-h-[300px] items-center justify-center">
@@ -349,7 +363,7 @@ export default function MyBooksPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-12">
+    <main className="min-h-screen bg-[#060e0c] px-4 py-12">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <Card>

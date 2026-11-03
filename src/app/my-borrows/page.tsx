@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { BookOpen, CircleCheck, CircleX } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import type { Borrow } from "@/lib/type/Borrow";
-import { API_BASE, getAuthToken, authHeaders } from "@/lib/api";
 
 import {
   Card,
@@ -24,6 +24,18 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Alert,
+  AlertTitle,
+} from "@/components/ui/alert";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 export default function MyBorrowsPage() {
   const { data: session } = authClient.useSession();
@@ -46,14 +58,17 @@ export default function MyBorrowsPage() {
         setLoading(true);
         setError("");
 
-        const token = await getAuthToken();
+        const { data: tokenData } = await authClient.token();
+        const token = tokenData?.token;
 
         const res = await fetch(
-          `${API_BASE}/borrows?email=${encodeURIComponent(
+          `http://localhost:8000/borrows?email=${encodeURIComponent(
             user.email
           )}`,
           {
-            headers: authHeaders(token),
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 
@@ -83,11 +98,16 @@ export default function MyBorrowsPage() {
       setError("");
       setSuccess("");
 
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+
       const res = await fetch(
-        `${API_BASE}/borrows/${borrowId}`,
+        `http://localhost:8000/borrows/${borrowId}`,
         {
           method: "DELETE",
-          headers: authHeaders(await getAuthToken()),
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -122,11 +142,11 @@ export default function MyBorrowsPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen px-4 py-12">
+      <main className="min-h-screen bg-[#060e0c] px-4 py-12">
         <div className="mx-auto max-w-6xl">
           <Card>
             <CardContent className="flex min-h-[300px] items-center justify-center">
-              <div className="h-10 w-10 animate-spin rounded-full border-4 border-muted border-t-emerald-500" />
+              <Spinner className="size-10 text-emerald-500" />
             </CardContent>
           </Card>
         </div>
@@ -135,7 +155,7 @@ export default function MyBorrowsPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-12">
+    <main className="min-h-screen bg-[#060e0c] px-4 py-12">
       <div className="mx-auto max-w-6xl">
         <Card>
           <CardHeader>
@@ -151,29 +171,35 @@ export default function MyBorrowsPage() {
           <CardContent>
             {/* Success Message */}
             {success && (
-              <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                {success}
-              </div>
+              <Alert className="mb-6 border-emerald-200 bg-emerald-50 text-emerald-700">
+                <CircleCheck />
+                <AlertTitle>{success}</AlertTitle>
+              </Alert>
             )}
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-                {error}
-              </div>
+              <Alert variant="destructive" className="mb-6">
+                <CircleX />
+                <AlertTitle>{error}</AlertTitle>
+              </Alert>
             )}
 
             {/* Empty State */}
             {borrows.length === 0 ? (
-              <div className="flex min-h-[250px] flex-col items-center justify-center rounded-lg border border-dashed text-center">
-                <h2 className="text-lg font-semibold">
-                  No borrowed books
-                </h2>
+              <Empty className="rounded-lg border bg-card">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <BookOpen />
+                  </EmptyMedia>
 
-                <p className="mt-2 text-sm text-muted-foreground">
-                  You have not borrowed any books yet.
-                </p>
-              </div>
+                  <EmptyTitle>No borrowed books</EmptyTitle>
+
+                  <EmptyDescription>
+                    You have not borrowed any books yet.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             ) : (
               <div className="overflow-x-auto rounded-lg border">
                 <Table>
@@ -206,10 +232,8 @@ export default function MyBorrowsPage() {
                         </TableCell>
 
                         {/* Book Title */}
-                        <TableCell>
-                          <span className="font-medium">
-                            {borrow.bookTitle}
-                          </span>
+                        <TableCell className="font-medium">
+                          {borrow.bookTitle}
                         </TableCell>
 
                         {/* Borrow Date */}
