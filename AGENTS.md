@@ -10,91 +10,41 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ---
 
-## Project Overview
+**booknook-client** — Next.js 16 (React 19) with shadcn/ui (base-nova), Tailwind v4, React Compiler. Frontend of a two-repo app:
 
-**booknook-client** — Next.js 16 (React 19) app with shadcn/ui (base-nova style), Tailwind CSS v4, and React Compiler.
-
----
+- **API server lives in the sibling repo `D:\Projects\Booknook\booknook-server`** (Express 5 + MongoDB, entry `index.js`, run with `node index.js`). This client cannot show book/borrow data without it running.
+- **All data fetching is client-side via fetch to hardcoded `http://localhost:8000`** (books, borrows, upload-image — ~12 call sites across `src/app/*` and `src/components/books/BorrowButton.tsx`). Pages are `"use client"` components fetching in `useEffect` — do not convert to RSC/server actions without also changing the data-fetch pattern. Auth lives in **this** repo, not the Express server (see below).
+- If backend behavior or URLs change, both repos are involved; the `localhost:8000` base URL is not env-configurable yet.
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start dev server with Turbopack |
+| `npm run dev` | Dev server with Turbopack |
 | `npm run build` | Production build (typechecks + compiles) |
-| `npm run start` | Run production server |
-| `npm run lint` | Run ESLint (Next.js core-web-vitals + TS rules) |
+| `npm run lint` | ESLint (flat config: `eslint-config-next/core-web-vitals` + `/typescript`) |
 
-**No test suite configured.** Add tests if needed.
+No test suite configured.
 
----
+## Auth (better-auth, hosted in this repo)
 
-## Key Configurations
-
-- **TypeScript**: Strict mode, path alias `@/*` → `./src/*`, `noEmit: true` (Next.js handles emission)
-- **Tailwind v4**: CSS-first config in `src/app/globals.css` (uses `@import "tailwindcss"`, `tw-animate-css`, `shadcn/tailwind.css`)
-- **React Compiler**: Enabled in `next.config.ts` (`reactCompiler: true`)
-- **Turbopack**: Enabled for dev, configured for Tailwind CSS loading
-- **ESLint**: Flat config extending `eslint-config-next/core-web-vitals` + `eslint-config-next/typescript`
-
----
-
-## Architecture & Conventions
-
-- **App Router** only (`src/app/`), RSC enabled by default
-- **shadcn/ui** components in `src/components/ui/` — 50+ pre-installed (see `components.json`)
-- **Aliases** (from `components.json` & `tsconfig.json`):
-  - `@/components` → `src/components`
-  - `@/components/ui` → `src/components/ui`
-  - `@/lib` → `src/lib`
-  - `@/hooks` → `src/hooks`
-  - `@/lib/utils` → `src/lib/utils.ts` (provides `cn()` helper)
-- **Fonts**: `Inter_Tight` from `next/font/google` (variable `--font-geist-sans`)
-- **Dark mode**: Class-based (`.dark` on root), CSS variables in `globals.css`
-
----
-
-## Adding shadcn/ui Components
-
-```bash
-npx shadcn@latest add <component-name>
-```
-
-Uses `components.json` config (style: `base-nova`, RSC: true, icons: lucide). Components land in `src/components/ui/`.
-
----
-
-## Gotchas
-
-- **React Compiler** is on — avoid `useMemo`/`useCallback`/`React.memo` unless profiling shows need; Compiler handles it.
-- **Turbopack** in dev — some webpack loaders/plugins won't work; check `next.config.ts` turbopack rules if adding loaders.
-- **Tailwind v4** — no `tailwind.config.js`; all config in `globals.css` via `@theme inline` and CSS variables.
-- **Strict TS** — `strict: true`, `noEmit: true`; type errors block `npm run build`.
-- **No tests** — if adding tests, configure Vitest/Jest + React Testing Library separately.
-- **`next/font` variable** — uses `--font-geist-sans` but loads `Inter_Tight`; update variable name if changing fonts.
-
----
-
-## File Structure Highlights
-
-```
-src/
-├── app/
-│   ├── layout.tsx       # Root layout, font, globals.css
-│   ├── page.tsx         # Home page (placeholder)
-│   └── globals.css      # Tailwind v4 + shadcn theme + CSS variables
-├── components/
-│   └── ui/              # 50+ shadcn components (accordion, button, dialog, etc.)
-├── hooks/               # Custom hooks (use-mobile, use-highlighted-code)
-└── lib/
-    ├── utils.ts         # cn() helper
-    └── highlighter.tsx  # Shiki-based code highlighting
-```
-
----
+- Server: `src/lib/auth.ts` — better-auth with `@better-auth/mongo-adapter` (db `booknook`), email+password, Google OAuth, `jwt()` plugin, JWT cookie-cache session (7 days). Served via catch-all `src/app/api/auth/[...all]/route.ts`.
+- Client: `src/lib/auth-client.ts` — ⚠️ it creates **two separate `createAuthClient` instances**: `authClient` (with `baseURL: process.env.BETTER_AUTH_URL`) and a second default-URL client that exports `signIn`, `signUp`, `useSession`. Components use both. Fixing this means changing imports across pages.
+- The Express server verifies these JWTs via `jose` JWKS.
 
 ## Environment
 
-- Node.js 20+ (per `@types/node`)
-- Package manager: npm (lockfile present)
-- No `.env*` files committed — create `.env.local` for local secrets if needed
+- `.env` exists locally (gitignored) and is **required** for dev: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `MONGODB_URI`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`. The Express server needs its own `MONGODB_URI`/`PORT` (8000) in the sibling repo.
+
+## Stack Specifics
+
+- **React Compiler** is on (`next.config.ts`) — avoid `useMemo`/`useCallback`/`React.memo`; the Compiler handles memoization.
+- **Tailwind v4** — no `tailwind.config.js`; all theme config in `src/app/globals.css` (`@theme inline` + CSS vars). Dark mode is class-based (`.dark`).
+- **Strict TS** (`noEmit: true`) — type errors block `npm run build`. Domain types live in `src/lib/type/`.
+- **`next/font`** — loads `Inter_Tight` but the CSS variable is `--font-geist-sans`; keep them aligned when changing fonts.
+- **shadcn/ui** — add with `npx shadcn@latest add <name>`; config in `components.json` lands components in `src/components/ui/` (~60 pre-installed; don't hand-edit these). Path aliases `@/*` → `./src/*`.
+
+## Gotchas
+
+- Turbopack is used in dev; Tailwind is wired through a `turbopack.rules` CSS loader in `next.config.ts` — keep that wiring if touching build config.
+- `next.config.ts` allows images from **any** https host (`remotePatterns: hostname: "**"`) because cover images come from arbitrary URLs.
