@@ -4,13 +4,14 @@ import { IBook } from "@/lib/type/Book";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { API_BASE } from "@/lib/api";
 
 export default function BooksPage() {
   const [books, setBooks] = useState<IBook[]>([]);
 
   useEffect(() => {
     async function fetchBooks() {
-      const res = await fetch("http://localhost:8000/books");
+      const res = await fetch(`${API_BASE}/books`);
       const data = await res.json();
 
       setBooks(data);

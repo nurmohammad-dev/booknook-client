@@ -2,6 +2,7 @@
 
 import { IBook } from "@/lib/type/Book";
 import Image from "next/image";
+import { API_BASE } from "@/lib/api";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -10,7 +11,7 @@ const NewArrivals = () => {
 
   useEffect(() => {
     async function fetchBooks() {
-      const res = await fetch("http://localhost:8000/books?limit=6");
+      const res = await fetch(`${API_BASE}/books?limit=6`);
       const data = await res.json();
 
       setBooks(data);

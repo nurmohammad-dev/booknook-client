@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 
 import { authClient } from "@/lib/auth-client";
+import { API_BASE, getAuthToken, authHeaders } from "@/lib/api";
 
 const categories = ["Fiction", "Science", "History", "Kids", "Others"];
 
@@ -56,14 +57,14 @@ export default function AddBookPage() {
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const { data, error } = await authClient.token();
-    const token = data?.token;
-
-    if (error || !token) {
-      throw new Error("Failed to get authentication token");
-    }
-
     try {
+      const token = await getAuthToken();
+
+      if (!token) {
+        console.error("Failed to get authentication token");
+        return;
+      }
+
       let imageUrl = "";
 
       // Upload image
@@ -73,7 +74,7 @@ export default function AddBookPage() {
         imageFormData.append("image", form.image);
 
         const imageResponse = await fetch(
-          "http://localhost:8000/upload-image",
+          `${API_BASE}/upload-image`,
           {
             method: "POST",
             headers: {
@@ -107,7 +108,7 @@ export default function AddBookPage() {
       };
 
       // Add book
-      const res = await fetch("http://localhost:8000/books", {
+      const res = await fetch(`${API_BASE}/books`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

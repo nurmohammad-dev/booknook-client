@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import type { Borrow } from "@/lib/type/Borrow";
+import { API_BASE, getAuthToken, authHeaders } from "@/lib/api";
 
 import {
   Card,
@@ -45,10 +46,15 @@ export default function MyBorrowsPage() {
         setLoading(true);
         setError("");
 
+        const token = await getAuthToken();
+
         const res = await fetch(
-          `http://localhost:8000/borrows?email=${encodeURIComponent(
+          `${API_BASE}/borrows?email=${encodeURIComponent(
             user.email
-          )}`
+          )}`,
+          {
+            headers: authHeaders(token),
+          }
         );
 
         const data = await res.json();
@@ -78,9 +84,10 @@ export default function MyBorrowsPage() {
       setSuccess("");
 
       const res = await fetch(
-        `http://localhost:8000/borrows/${borrowId}`,
+        `${API_BASE}/borrows/${borrowId}`,
         {
           method: "DELETE",
+          headers: authHeaders(await getAuthToken()),
         }
       );
 

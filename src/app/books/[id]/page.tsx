@@ -2,6 +2,7 @@ import BorrowButton from "@/components/books/BorrowButton";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import Image from "next/image";
+import { API_BASE } from "@/lib/api";
 
 export default async function BookDetailsPage({
   params,
@@ -15,7 +16,7 @@ export default async function BookDetailsPage({
     headers: await headers(),
   })
   const token = jwtToken?.token;
-  const res = await fetch(`http://localhost:8000/books/${id}`, {
+  const res = await fetch(`${API_BASE}/books/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

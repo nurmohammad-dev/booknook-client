@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Edit, Trash2, Upload } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
+import { API_BASE, getAuthToken, authHeaders } from "@/lib/api";
 
 import {
   Card,
@@ -130,9 +131,7 @@ export default function MyBooksPage() {
         setLoading(true);
         setError("");
 
-        const res = await fetch(
-          "http://localhost:8000/books"
-        );
+        const res = await fetch(`${API_BASE}/books`);
 
         const data = await res.json();
 
@@ -207,9 +206,10 @@ export default function MyBooksPage() {
         imageFormData.append("image", editImage);
 
         const imageResponse = await fetch(
-          "http://localhost:8000/upload-image",
+          `${API_BASE}/upload-image`,
           {
             method: "POST",
+            headers: authHeaders(await getAuthToken()),
             body: imageFormData,
           }
         );
@@ -235,11 +235,12 @@ export default function MyBooksPage() {
       };
 
       const res = await fetch(
-        `http://localhost:8000/books/${editingBook._id}`,
+        `${API_BASE}/books/${editingBook._id}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            ...(authHeaders(await getAuthToken()) as Record<string, string>),
           },
           body: JSON.stringify(bookData),
         }
@@ -294,9 +295,10 @@ export default function MyBooksPage() {
       setSuccess("");
 
       const res = await fetch(
-        `http://localhost:8000/books/${deletingBook._id}`,
+        `${API_BASE}/books/${deletingBook._id}`,
         {
           method: "DELETE",
+          headers: authHeaders(await getAuthToken()),
         }
       );
 
@@ -558,7 +560,7 @@ export default function MyBooksPage() {
           <Select
             value={editForm.category}
             onValueChange={(value) =>
-              updateEditForm("category", value)
+              updateEditForm("category", value ?? "")
             }
           >
             <SelectTrigger className="h-11 rounded-xl border-white/[0.1] bg-white/[0.03] text-white focus:ring-emerald-500">
