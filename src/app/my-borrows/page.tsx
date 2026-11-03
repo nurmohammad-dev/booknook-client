@@ -144,7 +144,7 @@ export default function MyBorrowsPage() {
     return (
       <main className="min-h-screen bg-[#060e0c] px-4 py-12">
         <div className="mx-auto max-w-6xl">
-          <Card>
+          <Card className="rounded-2xl border border-white/[0.08] bg-[#0a1012]/90 shadow-2xl shadow-black/30 backdrop-blur-sm">
             <CardContent className="flex min-h-[300px] items-center justify-center">
               <Spinner className="size-10 text-emerald-500" />
             </CardContent>
@@ -157,13 +157,13 @@ export default function MyBorrowsPage() {
   return (
     <main className="min-h-screen bg-[#060e0c] px-4 py-12">
       <div className="mx-auto max-w-6xl">
-        <Card>
+        <Card className="rounded-2xl border border-white/[0.08] bg-[#0a1012]/90 shadow-2xl shadow-black/30 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-2xl">
+            <CardTitle className="text-2xl text-white">
               My Borrows
             </CardTitle>
 
-            <CardDescription>
+            <CardDescription className="text-white/40">
               Books you have currently borrowed.
             </CardDescription>
           </CardHeader>
@@ -171,7 +171,7 @@ export default function MyBorrowsPage() {
           <CardContent>
             {/* Success Message */}
             {success && (
-              <Alert className="mb-6 border-emerald-200 bg-emerald-50 text-emerald-700">
+              <Alert className="mb-6 border-emerald-400/20 bg-emerald-400/10 text-emerald-300">
                 <CircleCheck />
                 <AlertTitle>{success}</AlertTitle>
               </Alert>
@@ -179,7 +179,7 @@ export default function MyBorrowsPage() {
 
             {/* Error Message */}
             {error && (
-              <Alert variant="destructive" className="mb-6">
+              <Alert variant="destructive" className="mb-6 border-red-400/20 bg-red-400/10">
                 <CircleX />
                 <AlertTitle>{error}</AlertTitle>
               </Alert>
@@ -187,29 +187,29 @@ export default function MyBorrowsPage() {
 
             {/* Empty State */}
             {borrows.length === 0 ? (
-              <Empty className="rounded-lg border bg-card">
+              <Empty className="rounded-xl border border-dashed border-white/[0.08]">
                 <EmptyHeader>
-                  <EmptyMedia variant="icon">
+                  <EmptyMedia variant="icon" className="bg-white/[0.04] text-emerald-300">
                     <BookOpen />
                   </EmptyMedia>
 
-                  <EmptyTitle>No borrowed books</EmptyTitle>
+                  <EmptyTitle className="text-white">No borrowed books</EmptyTitle>
 
-                  <EmptyDescription>
+                  <EmptyDescription className="text-white/40">
                     You have not borrowed any books yet.
                   </EmptyDescription>
                 </EmptyHeader>
               </Empty>
             ) : (
-              <div className="overflow-x-auto rounded-lg border">
-                <Table>
+              <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
+                <Table className="text-white">
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Book</TableHead>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Borrow Date</TableHead>
-                      <TableHead>Return Date</TableHead>
-                      <TableHead className="text-right">
+                    <TableRow className="border-white/[0.08] hover:bg-transparent">
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Book</TableHead>
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Title</TableHead>
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Borrow Date</TableHead>
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Return Date</TableHead>
+                      <TableHead className="text-right text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">
                         Action
                       </TableHead>
                     </TableRow>
@@ -217,7 +217,10 @@ export default function MyBorrowsPage() {
 
                   <TableBody>
                     {borrows.map((borrow) => (
-                      <TableRow key={borrow._id}>
+                      <TableRow
+                        key={borrow._id}
+                        className="border-white/[0.06] hover:bg-white/[0.03]"
+                      >
                         {/* Book Image */}
                         <TableCell>
                           <div className="relative h-16 w-12 overflow-hidden rounded-md">
@@ -256,7 +259,7 @@ export default function MyBorrowsPage() {
                             disabled={
                               returningId === borrow._id
                             }
-                            className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+                            className="cursor-pointer rounded-lg bg-emerald-500 text-slate-950 hover:bg-emerald-400"
                           >
                             {returningId === borrow._id
                               ? "Returning..."

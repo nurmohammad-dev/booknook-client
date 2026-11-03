@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Edit, Trash2, Upload } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
+import { FALLBACK_BOOK_IMAGE } from "@/lib/book-image";
 
 import {
   Card,
@@ -366,13 +367,13 @@ export default function MyBooksPage() {
     <main className="min-h-screen bg-[#060e0c] px-4 py-12">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
-        <Card>
+        <Card className="rounded-2xl border border-white/[0.08] bg-[#0a1012]/90 shadow-2xl shadow-black/30 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-2xl">
+            <CardTitle className="text-2xl text-white">
               My Books
             </CardTitle>
 
-            <CardDescription>
+            <CardDescription className="text-white/40">
               Manage the books you have added to the library.
             </CardDescription>
           </CardHeader>
@@ -380,41 +381,41 @@ export default function MyBooksPage() {
           <CardContent>
             {/* Success */}
             {success && (
-              <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              <div className="mb-6 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-300">
                 {success}
               </div>
             )}
 
             {/* Error */}
             {error && (
-              <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              <div className="mb-6 rounded-lg border border-red-400/20 bg-red-400/10 px-4 py-3 text-sm text-red-400">
                 {error}
               </div>
             )}
 
             {/* No books */}
             {books.length === 0 ? (
-              <div className="flex min-h-[250px] flex-col items-center justify-center rounded-lg border border-dashed text-center">
-                <h2 className="text-lg font-semibold">
+              <div className="flex min-h-[250px] flex-col items-center justify-center rounded-lg border border-dashed border-white/[0.08] text-center">
+                <h2 className="text-lg font-semibold text-white">
                   No books found
                 </h2>
 
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="mt-2 text-sm text-white/40">
                   You have not added any books yet.
                 </p>
               </div>
             ) : (
               /* Books Table */
-              <div className="overflow-x-auto rounded-lg border">
-                <Table>
+              <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
+                <Table className="text-white">
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Book</TableHead>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Author</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Copies</TableHead>
-                      <TableHead className="text-right">
+                    <TableRow className="border-white/[0.08] hover:bg-transparent">
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Book</TableHead>
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Title</TableHead>
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Author</TableHead>
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Category</TableHead>
+                      <TableHead className="text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">Copies</TableHead>
+                      <TableHead className="text-right text-[11px] font-semibold uppercase tracking-[0.1em] text-emerald-300/80">
                         Actions
                       </TableHead>
                     </TableRow>
@@ -422,12 +423,15 @@ export default function MyBooksPage() {
 
                   <TableBody>
                     {books.map((book) => (
-                      <TableRow key={book._id}>
+                      <TableRow
+                        key={book._id}
+                        className="border-white/[0.06] hover:bg-white/[0.03]"
+                      >
                         {/* Image */}
                         <TableCell>
                           <div className="relative h-16 w-12 overflow-hidden rounded-md">
                             <Image
-                              src={book.image}
+                              src={book.image || FALLBACK_BOOK_IMAGE}
                               alt={book.title}
                               fill
                               className="object-cover"
@@ -468,6 +472,7 @@ export default function MyBooksPage() {
                               onClick={() =>
                                 handleEdit(book)
                               }
+                              className="cursor-pointer rounded-lg border-white/[0.1] bg-white/[0.03] text-white hover:bg-white/[0.08] hover:text-white"
                             >
                               <Edit className="mr-2 h-4 w-4" />
                               Edit
@@ -480,6 +485,7 @@ export default function MyBooksPage() {
                               onClick={() =>
                                 setDeletingBook(book)
                               }
+                              className="cursor-pointer rounded-lg"
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Delete
@@ -737,13 +743,13 @@ export default function MyBooksPage() {
           }
         }}
       >
-        <AlertDialogContent>
+        <AlertDialogContent className="border border-white/[0.08] bg-[#0a1012] text-white">
           <AlertDialogHeader>
-            <AlertDialogTitle>
+            <AlertDialogTitle className="text-white">
               Delete this book?
             </AlertDialogTitle>
 
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-white/50">
               Are you sure you want to delete{" "}
               <span className="font-semibold">
                 {deletingBook?.title}
@@ -753,7 +759,10 @@ export default function MyBooksPage() {
           </AlertDialogHeader>
 
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>
+            <AlertDialogCancel
+              disabled={deleting}
+              className="rounded-lg border-white/[0.1] bg-white/[0.03] text-white hover:bg-white/[0.08] hover:text-white"
+            >
               Cancel
             </AlertDialogCancel>
 
