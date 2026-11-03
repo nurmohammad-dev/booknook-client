@@ -1,8 +1,8 @@
 "use client";
 
 import { IBook } from "@/lib/type/Book";
+import { FALLBACK_BOOK_IMAGE } from "@/lib/book-image";
 import Image from "next/image";
-import { API_BASE } from "@/lib/api";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -11,7 +11,7 @@ const NewArrivals = () => {
 
   useEffect(() => {
     async function fetchBooks() {
-      const res = await fetch(`${API_BASE}/books?limit=6`);
+      const res = await fetch("http://localhost:8000/books?limit=6");
       const data = await res.json();
 
       setBooks(data);
@@ -28,7 +28,7 @@ const NewArrivals = () => {
         {books.map((book) => (
           <div key={book._id} className="rounded-lg border p-4 shadow-sm">
             <Image
-              src={book.image}
+              src={book.image || FALLBACK_BOOK_IMAGE}
               alt={book.title}
               width={300}
               height={400}

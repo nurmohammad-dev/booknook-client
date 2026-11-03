@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import Image from "next/image";
 import { redirect, notFound } from "next/navigation";
-import { API_BASE } from "@/lib/api";
+import { FALLBACK_BOOK_IMAGE } from "@/lib/book-image";
 
 export default async function BookDetailsPage({
   params,
@@ -26,7 +26,7 @@ export default async function BookDetailsPage({
     headers: await headers(),
   })
   const token = jwtToken?.token;
-  const res = await fetch(`${API_BASE}/books/${id}`, {
+  const res = await fetch(`http://localhost:8000/books/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -46,7 +46,7 @@ export default async function BookDetailsPage({
     <main className="mx-auto min-h-screen max-w-4xl px-4 py-12">
       <div className="grid gap-8 md:grid-cols-2">
         <Image
-          src={book.image}
+          src={book.image || FALLBACK_BOOK_IMAGE}
           alt={book.title}
           width={500}
           height={650}
