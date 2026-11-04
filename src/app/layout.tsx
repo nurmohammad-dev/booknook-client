@@ -11,7 +11,7 @@ const interTight = Inter_Tight({
 
 
 export const metadata: Metadata = {
-   title: "BookNook | Your Digital Library",
+   title: "BookNook | Online Library",
   description: "Discover, borrow, and manage your favorite books with BookNook, your modern online library.",
 };
 

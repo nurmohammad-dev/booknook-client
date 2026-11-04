@@ -1,4 +1,5 @@
 import { Atom, BookOpen, Baby, Landmark } from "lucide-react";
+import Link from "next/link";
 
 const categories = [
   {
@@ -47,7 +48,7 @@ export default function TopCategories() {
           {categories.map((category) => {
             const Icon = category.icon;
             return (
-              <a
+              <Link
                 key={category.name}
                 href={`/books?category=${category.name.toLowerCase()}`}
                 className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.03] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-white/[0.06]"
@@ -74,7 +75,7 @@ export default function TopCategories() {
                   <span>Explore</span>
                   <span>→</span>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>

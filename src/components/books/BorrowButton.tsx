@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { API_BASE, getAuthToken, authHeaders } from "@/lib/api";
 
 interface BorrowButtonProps {
   bookId: string;
@@ -52,11 +51,14 @@ export default function BorrowButton({
       setIsBorrowing(true);
       setError("");
 
-      const res = await fetch(`${API_BASE}/borrows`, {
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+
+      const res = await fetch("http://localhost:8000/borrows", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(authHeaders(await getAuthToken()) as Record<string, string>),
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           bookId,

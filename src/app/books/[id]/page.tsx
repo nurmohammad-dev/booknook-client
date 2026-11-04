@@ -12,7 +12,6 @@ export default async function BookDetailsPage({
 }) {
   const { id } = await params;
 
-  // Private route: send unauthenticated visitors to login (they come back here after login)
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -21,7 +20,6 @@ export default async function BookDetailsPage({
     redirect(`/login?redirect=/books/${id}`);
   }
 
-  //server component: attach the session's JWT to the protected API call
   const jwtToken = await auth.api.getToken({
     headers: await headers(),
   })
