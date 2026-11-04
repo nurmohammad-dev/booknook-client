@@ -73,7 +73,7 @@ export default function AddBookPage() {
         imageFormData.append("image", form.image);
 
         const imageResponse = await fetch(
-          "http://localhost:8000/upload-image",
+          `${process.env.NEXT_PUBLIC_API_URL}/upload-image`,
           {
             method: "POST",
             headers: {
@@ -107,7 +107,7 @@ export default function AddBookPage() {
       };
 
       // Add book
-      const res = await fetch("http://localhost:8000/books", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

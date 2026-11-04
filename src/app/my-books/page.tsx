@@ -132,7 +132,7 @@ export default function MyBooksPage() {
         setError("");
 
         const res = await fetch(
-          "http://localhost:8000/books"
+          `${process.env.NEXT_PUBLIC_API_URL}/books`
         );
 
         const data = await res.json();
@@ -211,7 +211,7 @@ export default function MyBooksPage() {
         const token = tokenData?.token;
 
         const imageResponse = await fetch(
-          "http://localhost:8000/upload-image",
+          `${process.env.NEXT_PUBLIC_API_URL}/upload-image`,
           {
             method: "POST",
             headers: {
@@ -245,7 +245,7 @@ export default function MyBooksPage() {
       const token = tokenData?.token;
 
       const res = await fetch(
-        `http://localhost:8000/books/${editingBook._id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/books/${editingBook._id}`,
         {
           method: "PATCH",
           headers: {
@@ -308,7 +308,7 @@ export default function MyBooksPage() {
       const token = tokenData?.token;
 
       const res = await fetch(
-        `http://localhost:8000/books/${deletingBook._id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/books/${deletingBook._id}`,
         {
           method: "DELETE",
           headers: {
