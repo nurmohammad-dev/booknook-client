@@ -5,7 +5,7 @@ import { X, Facebook, Instagram } from "./SocialIcons";
 export default function Footer() {
   return (
     <footer className="w-full border-t border-white/5 bg-slate-950 text-slate-300">
-      <div className="mx-auto max-w-7xl px-4 pt-12 pb-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 pt-12 pb-6 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
           {/* Brand */}
           <div>

@@ -137,6 +137,23 @@
   }
 }
 
+/* Hero slider pagination bullets */
+.home-hero-pagination {
+  display: flex;
+  gap: 6px;
+}
+.home-hero-pagination .swiper-pagination-bullet {
+  width: 24px;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.25);
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+.home-hero-pagination .swiper-pagination-bullet-active {
+  background: #34d399;
+}
+
 @keyframes fade-up {
   from {
     opacity: 0;

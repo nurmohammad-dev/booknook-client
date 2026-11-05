@@ -133,7 +133,7 @@ export default function MyBorrowsPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#060e0c] px-4 py-12">
+      <main className="min-h-screen bg-[#060e0c] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <Card className="rounded-2xl border border-white/[0.08] bg-[#0a1012]/90 shadow-2xl shadow-black/30 backdrop-blur-sm">
             <CardContent className="flex min-h-[300px] items-center justify-center">
@@ -146,7 +146,7 @@ export default function MyBorrowsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#060e0c] px-4 py-12">
+    <main className="min-h-screen bg-[#060e0c] px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <Card className="rounded-2xl border border-white/[0.08] bg-[#0a1012]/90 shadow-2xl shadow-black/30 backdrop-blur-sm">
           <CardHeader>

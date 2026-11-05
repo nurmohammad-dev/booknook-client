@@ -61,7 +61,7 @@ export default function MyProfilePage() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       <div className="w-full max-w-lg">
         <Card className="border-white/10 bg-slate-900 text-white">
           <CardHeader className="px-6 pb-3 pt-5 text-center">

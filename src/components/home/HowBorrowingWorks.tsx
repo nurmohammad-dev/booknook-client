@@ -27,7 +27,7 @@ const steps = [
 export default function HowBorrowingWorks() {
   return (
     <section className="border-t border-white/5 bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+      <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
         {/* Intro */}
         <div>
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-300">
